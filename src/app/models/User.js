@@ -9,6 +9,8 @@ class User extends Model {
             last_name: DataTypes.STRING,
             email: DataTypes.STRING,
             password: DataTypes.STRING,
+            password_reset_token: DataTypes.STRING,
+            password_reset_expiration: DataTypes.DATE
         },
         {
             sequelize: connection,
