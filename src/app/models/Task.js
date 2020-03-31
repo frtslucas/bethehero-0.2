@@ -1,40 +1,22 @@
-// const Sequelize = require('sequelize');
+const { Model, DataTypes } = require('sequelize')
 
-// class Task extends Sequelize.Model {}
-// Task.init({
-//     title: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
+class Task extends Model {
+    static init(connection) {
+        super.init(
+            {
+                title: DataTypes.STRING,
+                description: DataTypes.STRING,
+                value: DataTypes.DECIMAL
+            },
+            {
+                sequelize: connection,
+            }
+        )
+    };
 
-//     description: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
+    static associate(models) {
+        this.belongsTo(models.Project, { foreignKey: 'project_id', as: 'project' });
+    }
+};
 
-//     project: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
-
-//     assignedTo: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
-
-//     user: {
-//         type: Sequelize.STRING,
-//         allowNull: false
-//     },
-
-//     completed: {
-//         type: Sequelize.BOOLEAN,
-//         allowNull: false,
-//         defaultValue: false
-//     },
-
-//     createdAt: {
-//         type: Sequelize.DATE,
-//         defaultValue: Date.now()
-//     },
-// })
+module.exports = Task;

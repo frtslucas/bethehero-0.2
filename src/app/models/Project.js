@@ -1,33 +1,22 @@
-// const mongoose = require('../../database/connection');
+const { Model, DataTypes } = require('sequelize')
 
-// const ProjectSchema = new mongoose.Schema({
-//     title: {
-//         type: String,
-//         require: true
-//     },
+class Project extends Model {
+    static init(connection) {
+        super.init(
+            {
+                title: DataTypes.STRING,
+                description: DataTypes.STRING,
+            },
+            {
+                sequelize: connection,
+            }
+        )
+    };
 
-//     description: {
-//         type: String,
-//         require: true,
-//     },
+    static associate(models) {
+        this.belongsTo(models.User, { foreignKey: 'user_id', as: 'owner' });
+        this.hasMany(models.Task, { foreignKey: 'project_id', as: 'tasks_owned' });
+    }
+};
 
-//     user: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'User',
-//         require: true,
-//     },
-
-//     tasks: [{
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'Task',
-//     }],
-
-//     createdAt: {
-//         type: Date,
-//         default: Date.now
-//     },
-// });
-
-// const Project = mongoose.model('Project', ProjectSchema);
-
-// module.exports = Project;
+module.exports = Project;

@@ -1,5 +1,4 @@
 const { Model, DataTypes } = require('sequelize')
-const bcrypt = require('bcryptjs');
 
 class User extends Model {
     static init(connection) {
@@ -14,62 +13,12 @@ class User extends Model {
         },
         {
             sequelize: connection,
-        });
+        })
     };
+
+    static associate(models) {
+        this.hasMany(models.Project, { foreignKey: 'user_id', as: 'projects' });
+    }
 };
 
 module.exports = User;
-
-// const mongoose = require('../../database/connection');
-// const bcrypt = require('bcryptjs')
-
-// const UserSchema = new mongoose.Schema({
-//     firstName: {
-//         type: String,
-//         required: true
-//     },
-
-//     lastName: {
-//         type: String,
-//         required: true
-//     },
-
-//     email: {
-//         type: String,
-//         unique: true,
-//         required: true,
-//         lowercase: true
-//     },
-
-//     password: {
-//         type: String,
-//         required: true,
-//         select: false
-//     },
-
-//     passwordResetToken: {
-//         type: String,
-//         select: false
-//     },
-
-//     passwordResetExpiration: {
-//         type: Date,
-//         select: false
-//     },
-
-//     createdAt: {
-//         type: Date,
-//         default: Date.now
-//     },
-// });
-
-// UserSchema.pre('save', async function(next) {
-//     const hash = await bcrypt.hash(this.password, 10);
-//     this.password = hash;
-
-//     next();
-// });
-
-// const User = mongoose.model('User', UserSchema);
-
-// module.exports = User;

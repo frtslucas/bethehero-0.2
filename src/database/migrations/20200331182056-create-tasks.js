@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-      return queryInterface.createTable('users', { 
+      return queryInterface.createTable('tasks', { 
         id: {
           type: Sequelize.INTEGER,
           primaryKey: true,
@@ -10,34 +10,29 @@ module.exports = {
           allowNull: false,
         },
 
-        first_name: {
+        project_id: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          references: { model: 'projects', key: 'id' },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE'
+        },
+
+        title: {
           type: Sequelize.STRING,
           allowNull: false
         },
 
-        last_name: {
+        description: {
           type: Sequelize.STRING,
           allowNull: false
         },
 
-        email: {
-          type: Sequelize.STRING,
+        value: {
+          type: Sequelize.DECIMAL,
           allowNull: false
         },
 
-        password: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-
-        password_reset_token: {
-          type: Sequelize.STRING
-        },
-  
-        password_reset_expiration: {
-            type: Sequelize.DATE
-        },
-        
         created_at: {
           type: Sequelize.DATE,
           allowNull: false
@@ -51,6 +46,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-      return queryInterface.dropTable('users');
+      return queryInterface.dropTable('tasks');
   }
 };
