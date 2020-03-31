@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 const authConfig = require('../../config/authConfig.json');
 const mailer = require('../../modules/mailer');
-const User = require('../models/User');
+const Ong = require('../models/Ong');
 
 function generateToken(params = {}) {
     return jwt.sign(params, authConfig.secret, { expiresIn: 86400 });
@@ -19,23 +19,23 @@ module.exports = {
         const { email, password } = request.body;
 
         try {
-            if (await User.findOne({ where: {email} }))
+            if (await Ong.findOne({ where: {email} }))
                 return response.status(400).send({ error: 'Email is already registered.' });
 
             const hash = await hashPassword(password);
 
-            const user = await User.create(
+            const ong = await Ong.create(
                 Object.assign(request.body, { password: hash })
               );
 
-            user.password = undefined;
-            user.password_reset_token = undefined;
-            user.password_reset_expiration = undefined;
+            ong.password = undefined;
+            ong.password_reset_token = undefined;
+            ong.password_reset_expiration = undefined;
 
             return response.send({ 
-                user,
-                token: generateToken({ id: user.id })
-            })
+                ong,
+                token: generateToken({ id: ong.id })
+            }).header('Is Ong', true);
 
         } catch (err) {
             return response.status(400).send({ error: 'Registration failed.' });
@@ -45,41 +45,42 @@ module.exports = {
     async login (request, response) {
         const { email, password } = request.body;
         
-        const user = await User.findOne({ where: {email} })
+        const ong = await Ong.findOne({ where: {email} })
 
-        if (!user)
-            return response.status(400).send({ error: 'User not found.' });
+        if (!ong)
+            return response.status(400).send({ error: 'Ong not found.' });
         
-        if (! await bcrypt.compare(password, user.dataValues.password))
+        if (! await bcrypt.compare(password, ong.dataValues.password))
             return response.status(400).send({ error: 'Invalid password.' });
     
-        user.password = undefined;
-        user.password_reset_token = undefined;
-        user.password_reset_expiration = undefined;
+        ong.password = undefined;
+        ong.password_reset_token = undefined;
+        ong.password_reset_expiration = undefined;
         
+        response.header('X-Is-Ong', 'true');
         response.send({ 
-            user, 
-            token: generateToken({ id: user.id })
-        });
+            ong, 
+            token: generateToken({ id: ong.id }),
+        })
     },
 
     async forgotPassword (request, response) {
         const { email } = request.body;
     
         try {
-            const user = await User.findOne({ email });
+            const ong = await Ong.findOne({ email });
     
-            if (!user)
-                return response.status(400).send({ error: 'User not found.' });
+            if (!ong)
+                return response.status(400).send({ error: 'Ong not found.' });
     
             const token = crypto.randomBytes(20).toString('hex');
     
             const now = new Date();
             now.setMinutes(now.getMinutes() + 10);
 
-            user.password_reset_token = token;
-            user.password_reset_expiration = now;
-            await user.save();
+            ong.password_reset_token = token;
+            ong.password_reset_expiration = now;
+            await ong.save();
     
             mailer.sendMail({
                 to: email,
@@ -102,26 +103,26 @@ module.exports = {
         const { email, token, password } = request.body;
     
         try {
-            const user = await User.findOne({ email });
+            const ong = await Ong.findOne({ email });
             
-            if (!user)
-                return response.status(400).send({ error: 'User not found.' })
+            if (!ong)
+                return response.status(400).send({ error: 'Ong not found.' })
             
-            if (token !== user.dataValues.password_reset_token)
+            if (token !== ong.dataValues.password_reset_token)
                 return response.status(400).send({ error: 'Invalid token.' })
     
             const now = new Date();
             
-            if (now > user.dataValues.password_reset_expiration)
+            if (now > ong.dataValues.password_reset_expiration)
                 return response.status(400).send({ error: 'Token expired, please get a new one.' })
     
             const hash = await hashPassword(password);
             
-            user.password = hash;
-            user.password_reset_token = null;
-            user.password_reset_expiration = null;
+            ong.password = hash;
+            ong.password_reset_token = null;
+            ong.password_reset_expiration = null;
     
-            await user.save();
+            await ong.save();
     
             response.send({ message: "Password updated successfully" });
     

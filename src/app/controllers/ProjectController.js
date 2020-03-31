@@ -3,30 +3,34 @@ const Project = require('../models/Project');
 
 module.exports = {
     async index (request, response) {
-        const user_id = request.userId;
 
-        const user = await User.findByPk(user_id, {
+        const ong_id = request.authId;
+
+        const ong = await OngUser.findByPk(ong_id, {
             include: { association: 'projects' }
         });
 
-        return response.send(user.projects);
+        return response.send(ong);
     },
 
     async create (request, response) {
+
+        if (request.headers['x-is-ong'] !== 'true')
+            return response.status(401).send({ error: 'Permission denied '});
+
         const { title, description } = request.body;
-        const user_id = request.userId;
 
-        console.log(user_id);
+        const ong_id = request.authId;
 
-        const user = await User.findByPk(user_id);
+        const ong = await User.findByPk(ong_id);
 
-        if (!user)
-            return response.status(400).send({ error: 'User not found.' });
+        if (!ong)
+            return response.status(400).send({ error: 'ONG not found.' });
 
         const project = await Project.create({
             title,
             description,
-            user_id
+            ong_id
         });
 
         return response.send(project);

@@ -1,13 +1,15 @@
 const { Model, DataTypes } = require('sequelize')
 
-class User extends Model {
+class Ong extends Model {
     static init(connection) {
         super.init(
         {
-            first_name: DataTypes.STRING,
-            last_name: DataTypes.STRING,
+            name: DataTypes.STRING,
             email: DataTypes.STRING,
             password: DataTypes.STRING,
+            whatsapp: DataTypes.STRING(11),
+            city: DataTypes.STRING,
+            state: DataTypes.STRING(2),
             password_reset_token: DataTypes.STRING,
             password_reset_expiration: DataTypes.DATE
         },
@@ -17,8 +19,9 @@ class User extends Model {
     };
 
     static associate(models) {
-        this.belongsToMany(models.Ong, { through: 'users_ongs', as: 'following' });
+        this.hasMany(models.Project, { foreignKey: 'ong_id', as: 'projects' });
+        this.belongsToMany(models.User, { through: 'users_ongs', as: 'followers' });
     }
 };
 
-module.exports = User;
+module.exports = Ong;
