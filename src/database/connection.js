@@ -1,7 +1,10 @@
-const mongoose = require('mongoose');
+const Sequelize = require('sequelize');
+const dbConfig = require('../config/dbConfig')
 
-mongoose.connect('mongodb://localhost:27017/bethehero', { useNewUrlParser:  true, useUnifiedTopology: true, useFindAndModify: false });
-mongoose.set('useCreateIndex', true);
-mongoose.Promise = global.Promise;
+const User = require('../app/models/User')
 
-module.exports = mongoose;
+const connection = new Sequelize(dbConfig);
+
+User.init(connection)
+
+module.exports = connection;

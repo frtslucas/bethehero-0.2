@@ -1,46 +1,40 @@
-const mongoose = require('../../database/connection');
+// const Sequelize = require('sequelize');
 
-const TaskSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        require: true
-    },
+// class Task extends Sequelize.Model {}
+// Task.init({
+//     title: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
 
-    description: {
-        type: String,
-        require: true,
-    },
+//     description: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
 
-    project: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Project',
-        require: true,
-    },
+//     project: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
 
-    assignedTo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        require: true,
-    },
+//     assignedTo: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
 
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        require: true,
-    },
+//     user: {
+//         type: Sequelize.STRING,
+//         allowNull: false
+//     },
 
-    completed: {
-        type: Boolean,
-        require: true,
-        default: false
-    },
+//     completed: {
+//         type: Sequelize.BOOLEAN,
+//         allowNull: false,
+//         defaultValue: false
+//     },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-});
-
-const Task = mongoose.model('Task', TaskSchema);
-
-module.exports = Task;
+//     createdAt: {
+//         type: Sequelize.DATE,
+//         defaultValue: Date.now()
+//     },
+// })
