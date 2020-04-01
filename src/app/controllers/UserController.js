@@ -1,10 +1,9 @@
+const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-
 const authConfig = require('../../config/authConfig.json');
 const mailer = require('../../modules/mailer');
-const User = require('../models/User');
 
 function generateToken(params = {}) {
     return jwt.sign(params, authConfig.secret, { expiresIn: 86400 });
@@ -16,9 +15,9 @@ async function hashPassword(password) {
 
 module.exports = {
     async register (request, response) {
-        const { email, password } = request.body;
-
         try {
+            const { email, password } = request.body;
+
             if (await User.findOne({ where: {email} }))
                 return response.status(400).send({ error: 'Email is already registered.' });
 
@@ -27,6 +26,8 @@ module.exports = {
             const user = await User.create(
                 Object.assign(request.body, { password: hash })
               );
+
+            console.log(user);
 
             user.password = undefined;
             user.password_reset_token = undefined;
@@ -43,24 +44,28 @@ module.exports = {
     },
 
     async login (request, response) {
-        const { email, password } = request.body;
+        try {
+            const { email, password } = request.body;
         
-        const user = await User.findOne({ where: {email} })
-
-        if (!user)
-            return response.status(400).send({ error: 'User not found.' });
-        
-        if (! await bcrypt.compare(password, user.dataValues.password))
-            return response.status(400).send({ error: 'Invalid password.' });
+            const user = await User.findOne({ where: {email} });
     
-        user.password = undefined;
-        user.password_reset_token = undefined;
-        user.password_reset_expiration = undefined;
+            if (!user)
+                return response.status(400).send({ error: 'User not found.' });
+            
+            if (! await bcrypt.compare(password, user.dataValues.password))
+                return response.status(400).send({ error: 'Invalid password.' });
         
-        response.send({ 
-            user, 
-            token: generateToken({ id: user.id })
-        });
+            user.password = undefined;
+            user.password_reset_token = undefined;
+            user.password_reset_expiration = undefined;
+            
+            response.send({ 
+                user, 
+                token: generateToken({ id: user.id })
+            });    
+        } catch (err) {
+            return response.status(400).send({ error: 'Login failed.' });
+        }
     },
 
     async forgotPassword (request, response) {

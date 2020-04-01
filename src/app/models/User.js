@@ -4,10 +4,14 @@ class User extends Model {
     static init(connection) {
         super.init(
         {
-            first_name: DataTypes.STRING,
-            last_name: DataTypes.STRING,
+            name: DataTypes.STRING,
             email: DataTypes.STRING,
             password: DataTypes.STRING,
+            city: DataTypes.STRING,
+            state: DataTypes.STRING(2),
+            whatsapp: DataTypes.STRING(11),
+            acess_token: DataTypes.STRING,
+            role: DataTypes.ENUM('normal', 'ong'),
             password_reset_token: DataTypes.STRING,
             password_reset_expiration: DataTypes.DATE
         },
@@ -17,7 +21,7 @@ class User extends Model {
     };
 
     static associate(models) {
-        this.belongsToMany(models.Ong, { through: 'users_ongs', as: 'following' });
+
     }
 };
 

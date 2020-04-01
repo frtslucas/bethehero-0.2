@@ -10,12 +10,7 @@ module.exports = {
           allowNull: false,
         },
 
-        first_name: {
-          type: Sequelize.STRING,
-          allowNull: false
-        },
-
-        last_name: {
+        name: {
           type: Sequelize.STRING,
           allowNull: false
         },
@@ -28,6 +23,31 @@ module.exports = {
         password: {
           type: Sequelize.STRING,
           allowNull: false
+        },
+
+        city: {
+          type: Sequelize.STRING,
+          allowNull: false
+        },
+
+        state: {
+          type: Sequelize.STRING(2),
+          allowNull: false
+        },
+
+        whatsapp: {
+          type: Sequelize.STRING(11),
+          allowNull: false
+        },
+
+        role: {
+          type: Sequelize.ENUM('normal', 'ong'),
+          defaultValue: 'normal',
+          allowNull: false,
+        },
+
+        access_token: {
+          type: Sequelize.STRING,
         },
 
         password_reset_token: {

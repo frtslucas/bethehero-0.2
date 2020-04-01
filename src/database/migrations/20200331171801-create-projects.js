@@ -28,13 +28,6 @@ module.exports = {
           allowNull: false
         },
 
-        tasks: {
-          type: Sequelize.ARRAY(Sequelize.INTEGER),
-          allowNull: true,
-          onUpdate: 'CASCADE',
-          onDelete: 'CASCADE'
-        },
-
         created_at: {
           type: Sequelize.DATE,
           allowNull: false
