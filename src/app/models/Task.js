@@ -3,35 +3,34 @@ const mongoose = require('../../database/connection');
 const TaskSchema = new mongoose.Schema({
     title: {
         type: String,
-        require: true
+        required: true
     },
 
     description: {
         type: String,
-        require: true,
+        required: true,
+    },
+
+    value: {
+        type: Number,
+        required: true
     },
 
     project: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Project',
-        require: true,
+        required: true,
     },
 
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        require: true,
-    },
-
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        require: true,
+        required: true,
     },
 
     completed: {
         type: Boolean,
-        require: true,
+        required: true,
         default: false
     },
 

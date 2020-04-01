@@ -25,6 +25,11 @@ const UserSchema = new mongoose.Schema({
         select: false
     },
 
+    projects: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Project',
+    }],
+
     passwordResetToken: {
         type: String,
         select: false
